@@ -1,0 +1,65 @@
+@token = 
+
+### Hello World
+GET http://localhost:3000
+
+### Criar um novo usuário
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+  "email": "kevin.2@email.com",
+  "name": "kevin 2",
+  "password": "123456"
+}
+
+### Obter todas os usuários
+GET http://localhost:3000/users
+# Authorization: Bearer {{token}}
+
+### Obter um usuário
+GET http://localhost:3000/users/75ab5c3d-b0cb-4314-b27d-243ff7bac1f2
+# Authorization: Bearer {{token}}
+
+# ### Logar
+# POST http://localhost:3000/auth/login
+# Content-Type: application/json
+
+# {
+#   "username": "kevin",
+#   "password": "123456"
+# }
+
+# ### Criar uma nova tarefa
+# POST http://localhost:3000/task
+# Content-Type: application/json
+# Authorization: Bearer SEU_TOKEN_AQUI
+
+# {
+#   "title": "Nova Tarefa",
+#   "description": "Descrição da nova tarefa",
+#   "dueDate": "2023-12-31"
+# }
+
+# ### Obter todas as tarefas
+# GET http://localhost:3000/task
+# Authorization: Bearer {{token}}
+
+# ### Obter uma tarefa específica
+# GET http://localhost:3000/task/{id}
+# Authorization: Bearer {{token}}
+
+# ### Atualizar uma tarefa
+# PUT http://localhost:3000/task/{id}
+# Content-Type: application/json
+# Authorization: Bearer {{token}}
+
+# {
+#   "title": "Tarefa Atualizada",
+#   "description": "Descrição atualizada",
+#   "dueDate": "2023-12-31"
+# }
+
+# ### Deletar uma tarefa
+# DELETE http://localhost:3000/task/{id}
+# Authorization: Bearer {{token}}
