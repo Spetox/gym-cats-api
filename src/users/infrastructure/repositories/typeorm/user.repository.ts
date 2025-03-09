@@ -1,19 +1,19 @@
 import { ConflictException, Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserTypeormEntity } from 'src/repositories/typeorm/entities/user.entity';
+import { UserEntity } from 'src/users/entities/user.entity';
+import { IUserRepository } from 'src/users/gateways/repositories/user.repository';
 import { Repository } from 'typeorm';
 import { hashSync as bcryptHashSync } from 'bcrypt';
+import { UserTypeormEntity } from 'src/database/entities/user.entity';
 
 @Injectable()
-export class UserService {
+export class UserRepository implements IUserRepository {
   constructor(
     @InjectRepository(UserTypeormEntity)
     private readonly userRepository: Repository<UserTypeormEntity>,
   ) {}
 
-  async create(user: CreateUserDto): Promise<void> {
+  async create(user: UserEntity): Promise<void> {
     const userAlreadyExists = await this.userRepository.findOne({
       where: { email: user.email },
     });
@@ -30,11 +30,11 @@ export class UserService {
     await this.userRepository.save(userEntity);
   }
 
-  async findAll(): Promise<UserTypeormEntity[]> {
+  async findAll(): Promise<UserEntity[]> {
     return this.userRepository.find();
   }
 
-  async findOne(id: string): Promise<UserTypeormEntity> {
+  async findById(id: string): Promise<UserEntity> {
     const user = await this.userRepository.findOne({ where: { id } });
 
     if (!user) {
@@ -44,17 +44,11 @@ export class UserService {
     return user;
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<void> {
-    const user = await this.userRepository.findOne({ where: { id } });
-
-    if (!user) {
-      throw new Error('User not found');
-    }
-
-    await this.userRepository.update(id, updateUserDto);
+  async update(id: string, user: Omit<UserEntity, 'id'>): Promise<void> {
+    await this.userRepository.update(id, user);
   }
 
-  async remove(id: string): Promise<void> {
+  async delete(id: string): Promise<void> {
     await this.userRepository.delete(id);
   }
 }
