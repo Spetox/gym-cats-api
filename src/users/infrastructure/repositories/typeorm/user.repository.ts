@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/users/entities/user.entity';
 import { IUserRepository } from 'src/users/gateways/repositories/user.repository';
@@ -38,7 +42,7 @@ export class UserRepository implements IUserRepository {
     const user = await this.userRepository.findOne({ where: { id } });
 
     if (!user) {
-      throw new Error('User not found');
+      throw new NotFoundException('User not found');
     }
 
     return user;
@@ -50,5 +54,15 @@ export class UserRepository implements IUserRepository {
 
   async delete(id: string): Promise<void> {
     await this.userRepository.delete(id);
+  }
+
+  async findByEmail(email: string): Promise<UserEntity> {
+    const user = await this.userRepository.findOne({ where: { email } });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
   }
 }

@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateUserUsecase } from '../../usecases/create-user.usecase';
 import { CreateUserDto } from '../../dtos/create-user.dto';
@@ -18,6 +19,7 @@ import {
 } from 'src/users/dtos/update-user.dto';
 import { UpdateUserUsecase } from 'src/users/usecases/update-user.usecase';
 import { DeleteUserUsecase } from 'src/users/usecases/delete-user.usecase';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('users')
 export class UserController {
@@ -34,16 +36,19 @@ export class UserController {
     return this.createUserUsecase.execute(createUserDto);
   }
 
+  @UseGuards(AuthGuard)
   @Get()
   findAll() {
     return this.findAllUsersUsecase.execute();
   }
 
+  @UseGuards(AuthGuard)
   @Get(':id')
   findOne(@Param() params: FindUserByIdDto) {
     return this.findUserByIdUsecase.execute({ id: params.id });
   }
 
+  @UseGuards(AuthGuard)
   @Patch(':id')
   update(
     @Param() params: UpdateUserParamsDto,
@@ -52,6 +57,7 @@ export class UserController {
     return this.updateUserUsecase.execute(params.id, updateUserDto);
   }
 
+  @UseGuards(AuthGuard)
   @Delete(':id')
   remove(@Param() params: UpdateUserParamsDto) {
     return this.DeleteUserUsecase.execute({ id: params.id });
