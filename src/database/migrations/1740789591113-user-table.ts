@@ -8,6 +8,8 @@ export class UserTable1740789591113 implements MigrationInterface {
                 "email" varchar(256) NOT NULL,
                 "name" varchar(256) NOT NULL,
                 "password" varchar(256) NOT NULL,
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
                 CONSTRAINT "user_pk" PRIMARY KEY ("id"),
                 CONSTRAINT "user_name_unique" UNIQUE ("name")
             );

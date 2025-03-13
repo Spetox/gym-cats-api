@@ -1,6 +1,6 @@
 import { IUserRepository } from '../gateways/repositories/user.repository';
 import { FindUserByIdDto } from '../dtos/find-user-by-id.dto';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class FindUserByIdUsecase {
@@ -10,6 +10,12 @@ export class FindUserByIdUsecase {
   ) {}
 
   async execute(input: FindUserByIdDto): Promise<any> {
-    return await this.userRepository.findById(input.id);
+    const user = await this.userRepository.findById(input.id);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
   }
 }

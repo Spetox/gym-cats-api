@@ -25,6 +25,10 @@ export class SignInUsecase {
     try {
       const user = await this.userRepository.findByEmail(input.email);
 
+      if (!user) {
+        throw new UnauthorizedException('Invalid credentials');
+      }
+
       if (bcryptCompareSync(input.password, user.password)) {
         const payload = { sub: user.id, username: user.name };
 

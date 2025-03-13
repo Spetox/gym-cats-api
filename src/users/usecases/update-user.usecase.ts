@@ -10,6 +10,6 @@ export class UpdateUserUsecase {
   ) {}
 
   execute(id: string, user: UpdateUserDto) {
-    return this.userRepository.update(id, user);
+    return this.userRepository.update(id, { ...user, updatedAt: new Date() });
   }
 }

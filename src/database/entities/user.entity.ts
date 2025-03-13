@@ -13,4 +13,10 @@ export class UserTypeormEntity {
 
   @Column({ type: 'varchar', name: 'password' })
   password: string;
+
+  @Column({ type: 'timestamp', name: 'created_at' })
+  createdAt: Date;
+
+  @Column({ type: 'timestamp', name: 'updated_at' })
+  updatedAt: Date;
 }

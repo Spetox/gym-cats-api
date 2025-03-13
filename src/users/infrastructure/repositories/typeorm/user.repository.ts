@@ -1,13 +1,8 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/users/entities/user.entity';
 import { IUserRepository } from 'src/users/gateways/repositories/user.repository';
 import { Repository } from 'typeorm';
-import { hashSync as bcryptHashSync } from 'bcrypt';
 import { UserTypeormEntity } from 'src/database/entities/user.entity';
 
 @Injectable()
@@ -18,37 +13,30 @@ export class UserRepository implements IUserRepository {
   ) {}
 
   async create(user: UserEntity): Promise<void> {
-    const userAlreadyExists = await this.userRepository.findOne({
-      where: { email: user.email },
-    });
-
-    if (userAlreadyExists) {
-      throw new ConflictException('User already exists');
-    }
-
     const userEntity = new UserTypeormEntity();
+
+    userEntity.id = user.id;
     userEntity.email = user.email;
     userEntity.name = user.name;
-    userEntity.password = bcryptHashSync(user.password, 10);
+    userEntity.password = user.password;
+    userEntity.createdAt = user.createdAt;
+    userEntity.updatedAt = user.updatedAt;
 
     await this.userRepository.save(userEntity);
   }
 
-  async findAll(): Promise<UserEntity[]> {
+  async findAll(): Promise<UserEntity[] | []> {
     return this.userRepository.find();
   }
 
-  async findById(id: string): Promise<UserEntity> {
-    const user = await this.userRepository.findOne({ where: { id } });
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    return user;
+  async findById(id: string): Promise<UserEntity | null> {
+    return this.userRepository.findOne({ where: { id } });
   }
 
-  async update(id: string, user: Omit<UserEntity, 'id'>): Promise<void> {
+  async update(
+    id: string,
+    user: Omit<UserEntity, 'id' | 'createdAt'>,
+  ): Promise<void> {
     await this.userRepository.update(id, user);
   }
 
@@ -56,13 +44,7 @@ export class UserRepository implements IUserRepository {
     await this.userRepository.delete(id);
   }
 
-  async findByEmail(email: string): Promise<UserEntity> {
-    const user = await this.userRepository.findOne({ where: { email } });
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    return user;
+  async findByEmail(email: string): Promise<UserEntity | null> {
+    return this.userRepository.findOne({ where: { email } });
   }
 }
